@@ -24,7 +24,8 @@
   "devDependencies": {
     "aegir": "^6.0.1",
     "chai": "^3.5.0",
-    "interface-pull-blob-store": "^0.3.0"
+    "interface-pull-blob-store": "^0.3.0",
+    "pull-defer": "^0.2.2"
   },
   "dependencies": {
     "dexie": "^1.4.1",

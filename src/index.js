@@ -4,6 +4,7 @@ const Dexie = require('dexie')
 const write = require('pull-write')
 const pushable = require('pull-pushable')
 const toBuffer = require('typedarray-to-buffer')
+const defer = require('pull-defer/sink')
 
 module.exports = class IdbBlobStore {
   constructor (dbname) {
@@ -22,17 +23,26 @@ module.exports = class IdbBlobStore {
 
   write (key, cb) {
     cb = cb || (() => {})
+    const d = defer()
 
-    return write((data, cb) => {
-      const blobs = data.map((blob) => ({
-        key,
-        blob
-      }))
+    this.remove(key, (err) => {
+      if (err) {
+        d.abort(err)
+        return cb(err)
+      }
+      d.resolve(write((data, cb) => {
+        const blobs = data.map((blob) => ({
+          key,
+          blob
+        }))
 
-      this.table.bulkPut(blobs)
-        .then(() => cb())
-        .catch(cb)
-    }, null, 100, cb)
+        this.table.bulkPut(blobs)
+          .then(() => cb())
+          .catch(cb)
+      }, null, 100, cb))
+    })
+
+    return d
   }
 
   read (key) {
