@@ -5,6 +5,8 @@ const write = require('pull-write')
 const pushable = require('pull-pushable')
 const toBuffer = require('typedarray-to-buffer')
 const defer = require('pull-defer/sink')
+const toWindow = require('pull-window').recent
+const pull = require('pull-stream')
 
 module.exports = class IdbBlobStore {
   constructor (dbname) {
@@ -39,16 +41,43 @@ module.exports = class IdbBlobStore {
         return cb(err)
       }
 
-      d.resolve(write((data, cb) => {
+      const table = this.table
+
+      d.resolve(pull(
+        toWindow(100, 10),
+        write(writer, reduce, 100, cb)
+      ))
+
+      function writer (data, cb) {
         const blobs = data.map((blob) => ({
           key,
           blob
         }))
 
-        this.table.bulkPut(blobs)
+        table
+          .bulkPut(blobs)
           .then(() => cb())
           .catch(cb)
-      }, null, 100, cb))
+      }
+
+      function reduce (queue, data) {
+        queue = queue || []
+        if (!Array.isArray(data)) {
+          data = [data]
+        }
+
+        data = data.map(ensureBuffer)
+
+        if (!queue.length || last(queue).length > 99) {
+          queue.push(Buffer.concat(data))
+        } else {
+          queue[lastIndex(queue)] = Buffer.concat(
+            last(queue).concat(data)
+          )
+        }
+
+        return queue
+      }
     })
 
     return d
@@ -66,8 +95,8 @@ module.exports = class IdbBlobStore {
     this.table
       .where('key').equals(key)
       .each((val) => p.push(toBuffer(val.blob)))
-      .then(() => p.end())
       .catch((err) => p.end(err))
+      .then(() => p.end())
 
     return p
   }
@@ -99,4 +128,16 @@ module.exports = class IdbBlobStore {
       .then(() => cb())
       .catch(cb)
   }
+}
+
+function lastIndex (arr) {
+  return arr.length - 1
+}
+
+function last (arr) {
+  return arr[lastIndex(arr)]
+}
+
+function ensureBuffer (data) {
+  return Buffer.isBuffer(data) ? data : Buffer.from(data)
 }

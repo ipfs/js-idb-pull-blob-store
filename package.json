@@ -30,6 +30,7 @@
     "dexie": "^1.4.1",
     "pull-defer": "^0.2.2",
     "pull-pushable": "^2.0.1",
+    "pull-window": "^2.1.4",
     "pull-write": "^1.0.2",
     "typedarray-to-buffer": "^3.1.2"
   },
