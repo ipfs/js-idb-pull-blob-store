@@ -1,6 +1,6 @@
 {
   "name": "idb-pull-blob-store",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "IndexedDB implementation for interface-pull-blob-store",
   "main": "lib/index.js",
   "jsnext:main": "src/index.js",
