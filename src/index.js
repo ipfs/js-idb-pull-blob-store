@@ -18,18 +18,27 @@ module.exports = class IdbBlobStore {
       .stores({
         [this.path]: '++,key,blob'
       })
-    this.table = this.db[this.path]
+  }
+
+  get table () {
+    return this.db[this.path]
   }
 
   write (key, cb) {
     cb = cb || (() => {})
     const d = defer()
 
+    if (!key) {
+      cb(new Error('Missing key'))
+
+      return d
+    }
+
     this.remove(key, (err) => {
       if (err) {
-        d.abort(err)
         return cb(err)
       }
+
       d.resolve(write((data, cb) => {
         const blobs = data.map((blob) => ({
           key,
@@ -48,6 +57,12 @@ module.exports = class IdbBlobStore {
   read (key) {
     const p = pushable()
 
+    if (!key) {
+      p.end(new Error('Missing key'))
+
+      return p
+    }
+
     this.table
       .where('key').equals(key)
       .each((val) => p.push(toBuffer(val.blob)))
@@ -60,6 +75,10 @@ module.exports = class IdbBlobStore {
   exists (key, cb) {
     cb = cb || (() => {})
 
+    if (!key) {
+      return cb(new Error('Missing key'))
+    }
+
     this.table
       .where('key').equals(key)
       .count()
@@ -70,9 +89,13 @@ module.exports = class IdbBlobStore {
   remove (key, cb) {
     cb = cb || (() => {})
 
-    this.table
-      .where('key').equals(key)
-      .delete()
+    if (!key) {
+      return cb(new Error('Missing key'))
+    }
+
+    const coll = this.table.where('key').equals(key)
+    coll
+      .count((count) => count > 0 ? coll.delete() : null)
       .then(() => cb())
       .catch(cb)
   }
