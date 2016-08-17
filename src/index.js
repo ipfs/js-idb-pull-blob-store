@@ -92,11 +92,21 @@ module.exports = class IdbBlobStore {
       return p
     }
 
-    this.table
-      .where('key').equals(key)
-      .each((val) => p.push(toBuffer(val.blob)))
-      .catch((err) => p.end(err))
-      .then(() => p.end())
+    this.exists(key, (err, exists) => {
+      if (err) {
+        return p.end(err)
+      }
+
+      if (!exists) {
+        return p.end(new Error('Not found'))
+      }
+
+      this.table
+        .where('key').equals(key)
+        .each((val) => p.push(toBuffer(val.blob)))
+        .catch((err) => p.end(err))
+        .then(() => p.end())
+    })
 
     return p
   }
