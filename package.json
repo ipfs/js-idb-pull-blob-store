@@ -39,7 +39,9 @@
   },
   "homepage": "https://github.com/ipfs/js-idb-pull-blob-store",
   "contributors": [
-    "Friedel Ziegelmayer <dignifiedquire@gmail.com>"
+    "David Dias <daviddias.p@gmail.com>",
+    "Friedel Ziegelmayer <dignifiedquire@gmail.com>",
+    "greenkeeperio-bot <support@greenkeeper.io>"
   ],
   "repository": {
     "type": "git",
