@@ -1,6 +1,6 @@
 'use strict'
 
-const Dexie = require('dexie')
+const Dexie = require('dexie/dist/dexie.min')
 const write = require('pull-write')
 const pushable = require('pull-pushable')
 const toBuffer = require('typedarray-to-buffer')
