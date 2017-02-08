@@ -26,7 +26,7 @@
     "interface-pull-blob-store": "^0.6.0"
   },
   "dependencies": {
-    "dexie": "^1.4.2",
+    "dexie": "^2.0.0-beta.10",
     "pull-defer": "^0.2.2",
     "pull-pushable": "^2.0.1",
     "pull-window": "^2.1.4",
