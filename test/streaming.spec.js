@@ -5,10 +5,10 @@ const expect = require('chai').expect
 const pull = require('pull-stream')
 
 const IdbBlobStore = require('../src')
-const indexedDB = window.indexedDB ||
-        window.mozIndexedDB ||
-        window.webkitIndexedDB ||
-        window.msIndexedDB
+const indexedDB = self.indexedDB ||
+        self.mozIndexedDB ||
+        self.webkitIndexedDB ||
+        self.msIndexedDB
 
 describe('streaming', () => {
   let store
