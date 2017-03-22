@@ -21,7 +21,7 @@
   "author": "Friedel Ziegelmayer <dignifiedquire@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "aegir": "^10.0.0",
+    "aegir": "^11.0.1",
     "chai": "^3.5.0",
     "interface-pull-blob-store": "~0.6.0"
   },
