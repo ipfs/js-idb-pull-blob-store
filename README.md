@@ -9,6 +9,10 @@
 
 > [pull-blob-store](https://github.com/ipfs/interface-pull-blob-store) implementation for [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API).
 
+## Lead Maintainer
+
+[Alex Potsides](https://github.com/achingbrain)
+
 ## Installation
 
 ```bash
